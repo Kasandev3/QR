@@ -1,0 +1,207 @@
+<!doctype html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tu próximo servicio</title>
+<style>
+  :root {
+    --accent: #1D6FA4;
+    --bg: #F2F4F7;
+    --card: #FFFFFF;
+    --text: #1A1A2E;
+    --muted: #6B7280;
+    --line: #E5E7EB;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0F1115; --card: #1A1D24; --text: #F0F0F0; --muted: #9CA3AF; --line: #2A2E37; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 440px; margin: 0 auto; padding: 20px 16px 40px; }
+  .shop { text-align: center; padding: 8px 0 18px; }
+  .shop h1 { margin: 0; font-size: 22px; font-weight: 800; }
+  .shop p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+  .card {
+    background: var(--card); border-radius: 20px; padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06); margin-bottom: 14px;
+  }
+  .label {
+    font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .vehicle { font-size: 15px; color: var(--muted); margin-top: 6px; }
+  .what { font-size: 24px; font-weight: 800; margin: 4px 0 14px; line-height: 1.2; }
+  .when { display: flex; gap: 10px; flex-wrap: wrap; }
+  .pill {
+    flex: 1 1 140px; border: 1px solid var(--line); border-radius: 14px;
+    padding: 10px 12px;
+  }
+  .pill small { display: block; color: var(--muted); font-size: 12px; }
+  .pill b { font-size: 17px; }
+  .countdown {
+    margin-top: 12px; padding: 10px 12px; border-radius: 12px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent); font-weight: 700; font-size: 14px;
+  }
+  .countdown.late { background: #FEE2E2; color: #B91C1C; }
+  .note { margin-top: 12px; font-size: 14px; color: var(--muted); white-space: pre-line; }
+  .last { font-size: 14px; color: var(--muted); }
+  .last b { color: var(--text); }
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 15px; border-radius: 14px; margin-top: 10px;
+    font-size: 16px; font-weight: 700; text-decoration: none;
+  }
+  .btn.wa { background: #25D366; color: #fff; }
+  .btn.call { background: var(--accent); color: #fff; }
+  .btn.cal { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+  .btn svg { width: 20px; height: 20px; fill: currentColor; }
+  .empty { text-align: center; color: var(--muted); padding: 60px 16px; }
+  footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 24px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div id="empty" class="empty" hidden>
+    <h2>Código sin información</h2>
+    <p>Pide a tu taller que te genere un nuevo código QR.</p>
+  </div>
+
+  <div id="content" hidden>
+    <header class="shop">
+      <h1 id="shop"></h1>
+      <p id="slogan" hidden></p>
+    </header>
+
+    <section class="card">
+      <div class="label">Tu próximo servicio</div>
+      <div id="vehicle" class="vehicle" hidden></div>
+      <div id="what" class="what"></div>
+      <div class="when">
+        <div id="dateBox" class="pill" hidden><small>Fecha</small><b id="date"></b></div>
+        <div id="kmBox" class="pill" hidden><small>Kilometraje</small><b id="km"></b></div>
+      </div>
+      <div id="countdown" class="countdown" hidden></div>
+      <div id="note" class="note" hidden></div>
+    </section>
+
+    <section id="lastCard" class="card last" hidden>
+      Último servicio: <b id="last"></b>
+    </section>
+
+    <div id="actions" hidden>
+      <a id="wa" class="btn wa" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8 0-1.4.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l2 .9c.3.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+        Agendar por WhatsApp
+      </a>
+      <a id="call" class="btn call">
+        <svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg>
+        Llamar al taller
+      </a>
+    </div>
+    <a id="cal" class="btn cal" target="_blank" rel="noopener" hidden>
+      Agregar a mi calendario
+    </a>
+
+    <footer>Generado con AutoServ Pro</footer>
+  </div>
+</main>
+
+<script>
+(function () {
+  var q = new URLSearchParams(location.hash.slice(1));
+  function v(k) { return (q.get(k) || '').trim(); }
+  function show(id, text) {
+    var el = document.getElementById(id);
+    if (text !== undefined) el.textContent = text;
+    el.hidden = false;
+    return el;
+  }
+
+  var shop = v('t'), what = v('s');
+  if (!shop || !what) { show('empty'); return; }
+
+  var color = v('c');
+  if (/^[0-9a-fA-F]{6}$/.test(color)) {
+    document.documentElement.style.setProperty('--accent', '#' + color);
+  }
+
+  function parseDate(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+    return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+  }
+  var months = ['enero','febrero','marzo','abril','mayo','junio','julio',
+    'agosto','septiembre','octubre','noviembre','diciembre'];
+  function longDate(d) { return d.getDate() + ' de ' + months[d.getMonth()] + ' de ' + d.getFullYear(); }
+  function km(s) { return Number(s).toLocaleString('es-MX') + ' km'; }
+
+  document.title = what + ' · ' + shop;
+  show('content');
+  show('shop', shop);
+  if (v('e')) show('slogan', v('e'));
+  if (v('a')) show('vehicle', v('a'));
+  show('what', what);
+
+  var date = parseDate(v('f'));
+  if (date) {
+    show('dateBox'); show('date', longDate(date));
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var days = Math.round((date - today) / 86400000);
+    var cd = document.getElementById('countdown');
+    if (days > 60) cd.textContent = 'Faltan unos ' + Math.round(days / 30) + ' meses';
+    else if (days > 1) cd.textContent = 'Faltan ' + days + ' días';
+    else if (days === 1) cd.textContent = 'Es mañana';
+    else if (days === 0) cd.textContent = 'Es hoy';
+    else { cd.textContent = 'Tu servicio ya está pendiente, agenda tu cita'; cd.className += ' late'; }
+    cd.hidden = false;
+  }
+  if (/^\d+$/.test(v('k'))) { show('kmBox'); show('km', km(v('k'))); }
+  if (date && /^\d+$/.test(v('k'))) {
+    show('countdown').textContent += ' · o al llegar a ' + km(v('k')) + ', lo que pase primero';
+  }
+  if (v('n')) show('note', v('n'));
+
+  var last = parseDate(v('u'));
+  if (last) {
+    var t = longDate(last);
+    if (/^\d+$/.test(v('uk'))) t += ' · ' + km(v('uk'));
+    show('lastCard'); show('last', t);
+  }
+
+  // Teléfono del taller: 10 dígitos = México (+52).
+  var phone = v('p').replace(/[^\d+]/g, '');
+  if (phone) {
+    var wa = phone.replace('+', '');
+    if (wa.length === 10) wa = '52' + wa;
+    var msg = 'Hola ' + shop + ', quiero agendar mi servicio: ' + what +
+      (v('a') ? ' para mi ' + v('a') : '') + '.';
+    document.getElementById('wa').href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(msg);
+    document.getElementById('call').href = 'tel:' + phone;
+    show('actions');
+  }
+
+  if (date) {
+    var ymd = function (d) {
+      return d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+    };
+    var next = new Date(date); next.setDate(next.getDate() + 1);
+    var cal = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+      '&text=' + encodeURIComponent(what + ' — ' + shop) +
+      '&dates=' + ymd(date) + '/' + ymd(next) +
+      '&details=' + encodeURIComponent((v('a') ? v('a') + '\n' : '') + (phone ? 'Tel. ' + phone : ''));
+    document.getElementById('cal').href = cal;
+    show('cal');
+  }
+})();
+</script>
+</body>
+</html>
+
